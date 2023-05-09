@@ -1,18 +1,21 @@
-const express = require('express');
-require('dotenv').config()
-const cors = require('cors');
-const database = require('./src/database/mongo.database')
+import 'dotenv/config'
+import 'colors'
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone'
+import { typeDefs } from './src/schema/schema.index.js'
+import { resolvers } from './src/resolvers/resolver.index.js'
 
-const app = express();
-const PORT = process.env.PORT
-app.use(cors());
+const PORT = process.env.PORT || 3000;
+
+const server = new ApolloServer({
+    typeDefs, resolvers
+});
 
 
-
-
-
-app.listen(PORT, () => {
-    console.log('Server running :)');
-    database()
-
+const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => { { token: req.headers.token } },
+    listen: { port: PORT }
 })
+
+console.log(`🚀 ${'Server ready at:'.green } ${url.yellow}`)
+console.log(`${'Query at: '.magenta} ${'http://studio.apollographql.com/dev'.yellow}`);
