@@ -9,10 +9,15 @@ export const typeDefs = `#graphql
             id: Int
             }
 
+        type Author {
+            name: String!
+        }
+
         type Query {
             books: [Book!]  
-            getBooksByAuthor(author: String): [Book!]
-            getBookByName(name: String): [Book!]!
+            getBooksByAuthor(author: String): [Book]
+            getBookByName(name: String): [Book!]
             getBookByID(ID: Int): Book
+            authors:[Author!]
         }   
 `;

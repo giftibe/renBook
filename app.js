@@ -3,7 +3,7 @@ import 'colors'
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { typeDefs } from './src/schema/schema.index.js'
-import { resolvers } from './src/resolvers/resolver.index.js'
+import { resolvers } from './src/resolver/resolver.index.js'
 
 const PORT = process.env.PORT || 3000;
 
@@ -17,5 +17,5 @@ const { url } = await startStandaloneServer(server, {
     listen: { port: PORT }
 })
 
-console.log(`🚀 ${'Server ready at:'.green } ${url.yellow}`)
+console.log(`🚀 ${'Server ready at:'.green} ${url.yellow}`)
 console.log(`${'Query at: '.magenta} ${'http://studio.apollographql.com/dev'.yellow}`);
