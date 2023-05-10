@@ -5,19 +5,24 @@ export const typeDefs = `#graphql
         type Book {
             name: String!
             pages: Int
-            author: String  
+            author: String!  
             id: Int
-            }
+        }
 
-        type Author {
+
+        
+        type user {
             name: String!
+            email: String!
+            avatarURL:String!
+            username:String!
         }
 
         type Query {
             books: [Book!]  
-            getBooksByAuthor(author: String): [Book]
-            getBookByName(name: String): [Book!]
-            getBookByID(ID: Int): Book
-            authors:[Author!]
+            fetchBooksByAuthor(author: String): [Book]
+            fetchBookByName(name: String): [Book!]
+            fetchBookByID(ID: Int): Book
+  
         }   
 `;

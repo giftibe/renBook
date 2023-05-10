@@ -6,7 +6,6 @@ const bookSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true
     },
     genre: {
         type: String,
@@ -20,7 +19,7 @@ const bookSchema = new Schema({
         trim: true,
     },
 
-    Picture: {
+    picture: {
         type: String,
         // required: true,
         trim: true,
@@ -30,7 +29,6 @@ const bookSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true,
     }
 },
     { immutable: true },
