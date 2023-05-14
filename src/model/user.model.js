@@ -28,6 +28,11 @@ const userSchema = new Schema({
         unique: true,
     },
 
+    // password: {
+    //     type: String,
+    //     trim: true,
+    // },
+
     isDeleted: {
         type: Boolean,
         default: false,
@@ -43,4 +48,5 @@ userSchema.pre('remove', function (next) {
     next();
 });
 
-module.exports = mongoose.model('user', userSchema)
+const userModel = mongoose.model('user', userSchema)
+export default userModel

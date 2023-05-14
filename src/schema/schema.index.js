@@ -9,13 +9,23 @@ export const typeDefs = `#graphql
             id: Int
         }
 
-
+        type Mutation{
+            createUser(input: userInput): User
+        }
         
-        type user {
+        type User {
             name: String!
-            email: String!
+            email: String!   
             avatarURL:String!
             username:String!
+        }
+
+        input userInput {
+            name: String
+            email: String
+            avatarURL:String    
+            username:String
+            password:String
         }
 
         type Query {
@@ -23,6 +33,5 @@ export const typeDefs = `#graphql
             fetchBooksByAuthor(author: String): [Book]
             fetchBookByName(name: String): [Book!]
             fetchBookByID(ID: Int): Book
-  
         }   
 `;

@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 function database() {
     mongoose
         .set('strictQuery', true)
@@ -9,7 +8,7 @@ function database() {
             // userUnifiedTopology:true,
         })
         .then(() => {
-            console.log('Hurray! mongoDB is connected');
+            console.log(`${'✔✔✔'.green}  ${'Hurray! mongoDB is connected'.red}`);
         })
         .catch((err) => {
             console.log(
@@ -18,4 +17,4 @@ function database() {
         });
 }
 
-module.exports = database;
+export { database };
