@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { MESSAGES } from '../config/constant.config.js';
+import myUser from '../model/user.model.js'
 
 const books = [
     {
@@ -25,18 +26,17 @@ const books = [
 
     {
         id: 2,
-        name: "Mastery",
+        name: 'Mastery',
         pages: 386,
-        author: 'Robert Greene'
+        author: 'Robert Greene',
     },
 
     {
         id: 2,
-        name: "Laws of Human Nature",
+        name: 'Laws of Human Nature',
         pages: 764,
-        author: 'Robert Greene'
-    }
-
+        author: 'Robert Greene',
+    },
 ];
 
 export const resolvers = {
@@ -45,12 +45,13 @@ export const resolvers = {
             return books;
         },
 
-
-
+        // get books by searching authors
         fetchBooksByAuthor: (parent, args) => {
-            const booksWithAuthor = books.filter(book => book.author.toLowerCase().includes(args.author));
+            const booksWithAuthor = books.filter((book) =>
+                book.author.toLowerCase().includes(args.author)
+            );
             if (booksWithAuthor.length > 0) {
-                return booksWithAuthor
+                return booksWithAuthor;
             } else {
                 throw new GraphQLError(
                     { message: MESSAGES.BOOK.BOOK_NOT_FOUND_BY_AUTHOR },
@@ -63,13 +64,16 @@ export const resolvers = {
             }
         },
 
+        // get books by searching the book name
         fetchBookByName: (parent, args) => {
-            const booksWithName = books.filter(book => book.name.toLowerCase().includes(args.name));
+            const booksWithName = books.filter((book) =>
+                book.name.toLowerCase().includes(args.name)
+            );
             if (booksWithName.length > 0) {
-                return booksWithAuthor
+                return booksWithAuthor;
             } else {
                 throw new GraphQLError(
-                    {message: MESSAGES.BOOK.BOOK_NOT_FOUND_BY_NAME},
+                    { message: MESSAGES.BOOK.BOOK_NOT_FOUND_BY_NAME },
                     {
                         extensions: {
                             code: 404,
@@ -79,8 +83,9 @@ export const resolvers = {
             }
         },
 
+        // get books by searching the bookID
         fetchBookByID: (parent, args) => {
-            const fetchedBook = books.find(args.id)
+            const fetchedBook = books.find(args.id);
             console.log(fetchedBook);
             if (fetchedBook) {
                 return fetchedBook;
@@ -94,22 +99,64 @@ export const resolvers = {
                     }
                 );
             }
+        },
+    },
+
+
+    //MUTATION
+    Mutation: {
+        //create user
+        createUser: async (_parent, args, _context, _info) => {
+            //check if email exist
+            let email = args.input.email
+            let find_email = await myUser.find({ email })
+            let find_username = myUser.find(args.input.username)
+            console.log(email);
+            if (find_email) {
+                throw new GraphQLError(
+                    'Email already in use ' + args.input.email,
+                    {
+                        extensions: {
+                            code: 409,
+                        },
+                    }
+                );
+            }
+            //check if username exist
+            else if (find_username) {
+                throw new GraphQLError(
+                    'Username already in use ' + args.input.username,
+                    {
+                        extensions: {
+                            code: 409,
+                        },
+                    }
+                );
+            }
+            else {
+                //else, save the details
+                let newUser = new myUser({
+                    name: args.input.name,
+                    email: args.input.email,
+                    avatarURL: args.input.avatarURL,
+                    username: args.input.username,
+                    password: args.input.password
+                })
+                let saved = newUser.save()
+                return saved
+            }
         }
+    },
 
 
 
 
 
+    //create books
 
+    //update book
 
+    // delete books
 
-
-
-
-
-
-
-
-
-    }
-}
+    //
+};
