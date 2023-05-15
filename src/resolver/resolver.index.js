@@ -1,43 +1,8 @@
 import { GraphQLError } from 'graphql';
 import { MESSAGES } from '../config/constant.config.js';
 import myUser from '../model/user.model.js'
+import book_Model from '../model/book.model.js'
 
-const books = [
-    {
-        id: 1,
-        name: 'The Hitchhiker',
-        pages: 5464,
-        author: 'John Doe',
-    },
-
-    {
-        id: 2,
-        name: 'Harry Potter',
-        pages: 164,
-        author: 'Henry cavil',
-    },
-
-    {
-        id: 2,
-        name: 'Harry henfield',
-        pages: 235,
-        author: 'josh cavil',
-    },
-
-    {
-        id: 2,
-        name: 'Mastery',
-        pages: 386,
-        author: 'Robert Greene',
-    },
-
-    {
-        id: 2,
-        name: 'Laws of Human Nature',
-        pages: 764,
-        author: 'Robert Greene',
-    },
-];
 
 export const resolvers = {
     Query: {
@@ -111,9 +76,9 @@ export const resolvers = {
             let email = args.input.email
             let username = args.input.username
             let find_email = await myUser.find({ email })
-            let find_username = myUser.find({ username })
+            let find_username = await myUser.find({ username })
 
-            if (find_email > 0) {
+            if (find_email.length > 0) {
                 throw new GraphQLError(
                     'Email already in use ' + args.input.email,
                     {
@@ -125,7 +90,7 @@ export const resolvers = {
 
             }
             //check if username exist
-            else if (find_username > 0) {
+            else if (find_username.length > 0) {
                 throw new GraphQLError(
                     'Username already in use ' + args.input.username,
                     {
@@ -146,6 +111,33 @@ export const resolvers = {
                 })
                 let saved = newUser.save()
                 return saved
+            }
+        },
+
+
+        addbook: (_parent, args) => {
+            let newBook = new book_Model({
+                name: args.input.name,
+                pages: args.input.pages,
+                author: args.input.author,
+                quantity: args.input.quantity,
+                genre: args.input.genre
+            })
+
+
+            // console.log(newBook);
+            const saved_book = newBook.save()
+            if (saved_book) {
+                return saved_book
+            } else {
+                throw new GraphQLError(
+                    { message: MESSAGES.BOOK.BOOK_NOT_SAVED },
+                    {
+                        extensions: {
+                            code: 409,
+                        },
+                    }
+                );
             }
         }
     },

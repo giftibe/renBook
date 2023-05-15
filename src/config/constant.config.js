@@ -22,8 +22,9 @@ export const MESSAGES = {
         UNAUTHORIZED: 'Unauthorized access',
     },
 
-    BOOK:{
+    BOOK: {
         CREATED: "Book created successfully",
+        BOOK_NOT_SAVED: "Book creation unsuccessful",
         UPDATED: "Book updated successfully",
         DELETED: "Book deleted successfully",
         BOOK_NOT_FOUND: "Book not found",
@@ -34,6 +35,6 @@ export const MESSAGES = {
         BOOK_NOT_FOUND_BY_ID: "Book not found by id",
         BOOK_NOT_FOUND_BY_NAME: "Book not found by name",
         BOOK_NOT_FOUND_BY_AUTHOR: "Book not found by author",
-        
+
     }
 }

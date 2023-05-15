@@ -11,7 +11,6 @@ const bookSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        minlength: 1,
     },
     pages: {
         type: Number,
@@ -25,6 +24,12 @@ const bookSchema = new Schema({
         trim: true,
     },
 
+    quantity: {
+        type: Number,
+        required: true,
+        trim: true,
+    },
+
     author: {
         type: String,
         required: true,
@@ -35,10 +40,5 @@ const bookSchema = new Schema({
     { timestamps: true }
 );
 
-userSchema.pre('remove', function (next) {
-    this.isDeleted = false;
-    this.save();
-    next();
-});
-
-module.exports = mongoose.model('Book', bookSchema)
+const book_Model = mongoose.model('Book', bookSchema)
+export default book_Model
