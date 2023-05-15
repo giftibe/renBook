@@ -4,16 +4,28 @@ const { graphql } = pkg;
 export const typeDefs = `#graphql
         type Book {
             name: String!
-            pages: Int
+            pages: Int!
             author: String!  
-            id: Int
+            quantity: Int! 
+            genre: String!
+            id: String!
         }
 
         type Mutation{
-            createUser(input: userInput): User
+            createUser(input: userInput): User!
+            addbook(input: bookInput): Book!
+        }
+
+        input bookInput {
+            name: String!
+            pages: Int!
+            author: String! 
+            quantity: Int! 
+            genre: String!
         }
         
         type User {
+            id: String!
             name: String!
             email: String!   
             avatarURL:String!
