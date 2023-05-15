@@ -109,10 +109,11 @@ export const resolvers = {
         createUser: async (_parent, args, _context, _info) => {
             //check if email exist
             let email = args.input.email
+            let username = args.input.username
             let find_email = await myUser.find({ email })
-            let find_username = myUser.find(args.input.username)
-            console.log(email);
-            if (find_email) {
+            let find_username = myUser.find({ username })
+
+            if (find_email > 0) {
                 throw new GraphQLError(
                     'Email already in use ' + args.input.email,
                     {
@@ -121,9 +122,10 @@ export const resolvers = {
                         },
                     }
                 );
+
             }
             //check if username exist
-            else if (find_username) {
+            else if (find_username > 0) {
                 throw new GraphQLError(
                     'Username already in use ' + args.input.username,
                     {

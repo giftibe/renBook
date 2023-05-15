@@ -10,10 +10,11 @@ export const typeDefs = `#graphql
         }
 
         type Mutation{
-            createUser(input: userInput): User
+            createUser(input: userInput): User!
         }
         
         type User {
+            id: String!
             name: String!
             email: String!   
             avatarURL:String!
