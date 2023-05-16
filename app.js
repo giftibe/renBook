@@ -2,14 +2,15 @@ import 'dotenv/config'
 import 'colors'
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone'
-import { typeDefs } from './src/schema/schema.index.js'
-import { resolvers } from './src/resolver/resolver.index.js'
+import { combined_TypeDefs } from './src/schema/schema.index.js';
+import { combinedResolvers } from './src/resolver/resolver.index.js'
 import { database } from './src/database/mongo.database.js'
 
 const PORT = process.env.PORT || 3000;
 
 const server = new ApolloServer({
-    typeDefs, resolvers
+    typeDefs: combined_TypeDefs,
+    resolvers: combinedResolvers,
 });
 
 
