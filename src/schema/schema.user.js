@@ -19,14 +19,14 @@ export const user_typeDefs = `#graphql
             password:String!
         }
 
-
-    type Query {
+        type Query {
             users: [User!]
-            fetchUserByID(ID: Int): User
-            updateUserByID(ID: Int): User
+            fetchUserByID(id: ID!): User
         } 
 
-            type Mutation{
-            createUser(input: userInput): User!
+        type Mutation{
+            createUser(input: userInput!): User!
+            updateUserByID(id: ID!,input: userInput!): User!
+            DeleteUserByID(id: ID!): User!
         }
 `;
