@@ -92,7 +92,33 @@ export const book_resolvers = {
                     }
                 );
             }
-        }
-    },
+        },
 
+        deleteBookByID(_parent, args) {
+            const findBook = books.find(args.id);
+            if (findBook) {
+                let { id } = args
+                book_Model.findByIdAndDelete(id)
+                return {
+                    success: true,
+                    message: MESSAGES.BOOK.DELETED,
+                }
+            } else {
+                throw new GraphQLError(
+                    { message: MESSAGES.BOOK.BOOK_NOT_FOUND },
+                    {
+                        extensions: {
+                            code: 409,
+                        },
+                    })
+            }
+        },
+
+
+
+
+
+        
+
+    }
 }
