@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { MESSAGES } from '../config/constant.config.js';
 import myUser from '../model/user.model.js'
+import { isValidId } from '../utils/mongo.ID.js';
 
 export const user_resolvers = {
     Query: {
@@ -70,16 +71,84 @@ export const user_resolvers = {
             }
         },
 
+
+
+        // delete user
+        DeleteUserByID: (_parent, args) => {
+            let { id } = args
+            if (isValidId(id)) {
+                const findUser = myUser.findById(id)
+                if (findUser) {
+                    myUser.findByIdAndDelete(id)
+                    return {
+                        message: MESSAGES.USER.ACCOUNT_DELETED,
+                        extensions: {
+                            success: true,
+                            code: 201,
+                        }
+                    }
+                } else {
+                    throw new GraphQLError({
+                        message: MESSAGES.USER.NOT_FOUND,
+                        extensions: {
+                            success: false,
+                            code: 404,
+                        }
+                    })
+                }
+            } else {
+                throw new GraphQLError(
+                    {
+                        message: MESSAGES.USER.INCORRECT_DETAILS,
+                        extensions: {
+                            success: false,
+                            code: 500
+                        }
+                    }
+                )
+            }
+        },
+
+        //update user 
+        updateUserByID: (_parent, args) => {
+            let { id, input } = args
+            //check if the id is valid
+
+            if (isValidId(id)) {
+                //check if the user with the id exists
+                const findUser = myUser.findById(id)
+                if (findUser) {
+                    //update the user with the id provided
+                    myUser.findByIdAndUpdate(id, input)
+                    return {
+                        message: MESSAGES.USER.ACCOUNT_UPDATED,
+                        extensions: {
+                            success: true,
+                            code: 201,
+                        }
+                    }
+                } else {
+                    throw new GraphQLError({
+                        message: MESSAGES.USER.NOT_FOUND,
+                        extensions: {
+                            success: false,
+                            code: 404,
+                        }
+                    })
+                }
+            } else {
+                throw new GraphQLError(
+                    {
+                        message: MESSAGES.USER.INCORRECT_DETAILS,
+                        extensions: {
+                            success: false,
+                            code: 500
+                        }
+                    }
+                )
+            }
+        }
     },
 
 
-
-
-
-
-    //update book
-
-    // delete books
-
-    //
 };

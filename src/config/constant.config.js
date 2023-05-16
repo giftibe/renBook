@@ -7,6 +7,7 @@ export const MESSAGES = {
     USER: {
         CREATED: "User account created successfully",
         USER_NOT_FOUND:"User not found",
+        ERROR: "An error occured",
         DUPLICATE_EMAIL: "Email already exists",
         DUPLICATE_USERNAME: "Username already exists",
         REGISTERED: "Registration successful",
