@@ -3,7 +3,6 @@ const { graphql } = pkg;
 
 export const book_typeDefs = `#graphql
 
-
         type Book {
             name: String!
             pages: Int!
@@ -23,11 +22,12 @@ export const book_typeDefs = `#graphql
 
         type Mutation{
             addbook(input: bookInput): Book!
+            deleteBookByID(ID: Int): Book
         }
 
         type Query {
             books: [Book!]  
-            fetchBooksByAuthor(author: String): [Book]
+            fetchBooksByAuthor(author: String): [Book!]
             fetchBookByName(name: String): [Book!]
             fetchBookByID(ID: Int): Book
         }
