@@ -1,6 +1,3 @@
-import pkg from 'graphql';
-const { graphql } = pkg;
-
 export const user_typeDefs = `#graphql
 
         type User {
@@ -9,6 +6,7 @@ export const user_typeDefs = `#graphql
             email: String!   
             avatarURL:String!
             username:String!
+            tel: String!
         }
 
         input userInput {
@@ -17,16 +15,17 @@ export const user_typeDefs = `#graphql
             avatarURL:String!    
             username:String!
             password:String!
+            tel:String!            
         }
 
         type Query {
             users: [User!]
-            fetchUserByID(id: ID!): User
+            fetchUserByID(id: ID!): User!
         } 
 
         type Mutation{
-            createUser(input: userInput!): User!
+            createUser(input: userInput!): User
             updateUserByID(id: ID!,input: userInput!): User!
-            DeleteUserByID(id: ID!): User!
+            DeleteUserByID(id: ID!): String
         }
 `;

@@ -7,12 +7,16 @@ export const user_resolvers = {
     Query: {
         //find a user BY id
         fetchUserByID: (_parent, args) => {
-            let userID = args.id
-            console.log(args);
+            let { id } = args
 
-            let findUser = myUser.findById(UserID)
+            let findUser = myUser.findById(id)
             if (findUser) {
-                return findUser
+                // console.log(findUser);
+                return {
+                    success: true,
+                    code: 201,
+                    findUser
+                }
             } else {
                 throw new GraphQLError({
                     message: MESSAGES.USER.NOT_FOUND,
@@ -28,16 +32,15 @@ export const user_resolvers = {
     //MUTATION
     Mutation: {
         //create user
-        createUser: async (_parent, args, _context, _info) => {
+        createUser: (_parent, args, _context, _info) => {
             //check if email exist
-            let email = args.input.email
-            let username = args.input.username
-            let find_email = await myUser.find({ email })
-            let find_username = await myUser.find({ username })
+            let { email, username, name, password, avatarURL, tel, imageTag } = args.input
+            let find_email = myUser.find(email)
+            let find_username = myUser.find(username)
 
             if (find_email.length > 0) {
                 throw new GraphQLError(
-                    'Email already in use ' + args.input.email,
+                    'Email already in use ' + email,
                     {
                         extensions: {
                             code: 409,
@@ -45,11 +48,12 @@ export const user_resolvers = {
                     }
                 );
 
+
             }
             //check if username exist
             else if (find_username.length > 0) {
                 throw new GraphQLError(
-                    'Username already in use ' + args.input.username,
+                    'Username already in use ' + username,
                     {
                         extensions: {
                             code: 409,
@@ -60,11 +64,13 @@ export const user_resolvers = {
             else {
                 //else, save the details
                 let newUser = new myUser({
-                    name: args.input.name,
-                    email: args.input.email,
-                    avatarURL: args.input.avatarURL,
-                    username: args.input.username,
-                    password: args.input.password
+                    name: name,
+                    email: email,
+                    avatarURL: avatarURL,
+                    username: username,
+                    password: password,
+                    tel: tel,
+                    imageTag: imageTag
                 })
                 let saved = newUser.save()
                 return saved
@@ -76,9 +82,12 @@ export const user_resolvers = {
         // delete user
         DeleteUserByID: (_parent, args) => {
             let { id } = args
+            //check if the id is valid
             if (isValidId(id)) {
+                //check if the user with the id exists
                 const findUser = myUser.findById(id)
                 if (findUser) {
+                    //delete the user with the id provided
                     myUser.findByIdAndDelete(id)
                     return {
                         message: MESSAGES.USER.ACCOUNT_DELETED,
@@ -88,6 +97,7 @@ export const user_resolvers = {
                         }
                     }
                 } else {
+                    // if no user was found then throw error
                     throw new GraphQLError({
                         message: MESSAGES.USER.NOT_FOUND,
                         extensions: {
@@ -97,6 +107,7 @@ export const user_resolvers = {
                     })
                 }
             } else {
+                //if the id provided is not valid
                 throw new GraphQLError(
                     {
                         message: MESSAGES.USER.INCORRECT_DETAILS,
@@ -112,8 +123,8 @@ export const user_resolvers = {
         //update user 
         updateUserByID: (_parent, args) => {
             let { id, input } = args
-            //check if the id is valid
 
+            //check if the id is valid
             if (isValidId(id)) {
                 //check if the user with the id exists
                 const findUser = myUser.findById(id)
@@ -128,6 +139,7 @@ export const user_resolvers = {
                         }
                     }
                 } else {
+                    //if no user was found with the provided id throw error
                     throw new GraphQLError({
                         message: MESSAGES.USER.NOT_FOUND,
                         extensions: {
@@ -138,6 +150,7 @@ export const user_resolvers = {
                 }
             } else {
                 throw new GraphQLError(
+                    //if the id provided is not valid
                     {
                         message: MESSAGES.USER.INCORRECT_DETAILS,
                         extensions: {

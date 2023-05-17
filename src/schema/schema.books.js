@@ -1,5 +1,5 @@
 import pkg from 'graphql';
-const { graphql } = pkg;
+
 
 export const book_typeDefs = `#graphql
 

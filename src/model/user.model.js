@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { ROLE } from '../config/constant.config.js'
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -19,6 +20,10 @@ const userSchema = new Schema({
         type: String,
     },
 
+    imageTag: {
+        type: String
+    },
+
     username: {
         type: String,
         required: true,
@@ -28,10 +33,27 @@ const userSchema = new Schema({
         unique: true,
     },
 
-    // password: {
-    //     type: String,
-    //     trim: true,
-    // },
+    tel: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true,
+    },
+
+    password: {
+        type: String,
+        trim: true,
+        minlength: 5,
+        required: true,
+    },
+
+    role: {
+        type: String,
+        trim: true,
+        lowercase: true,
+        title: [ROLE.ADMIN, ROLE.USER],
+        default: ROLE.USER,
+    },
 
     isDeleted: {
         type: Boolean,
