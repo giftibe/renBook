@@ -1,2 +1,2 @@
 # renBook
-book renting api
+book renting/sales api
