@@ -7,6 +7,7 @@ export const user_typeDefs = `#graphql
             avatarURL:String!
             username:String!
             tel: String!
+            role: String!
         }
 
         input userInput {
@@ -18,14 +19,21 @@ export const user_typeDefs = `#graphql
             tel:String!            
         }
 
+        type delOutput {
+            name: String!
+            email: String! 
+        }
+
         type Query {
             users: [User!]
             fetchUserByID(id: ID!): User!
         } 
 
+        scalar DeletionResult
+
         type Mutation{
             createUser(input: userInput!): User
             updateUserByID(id: ID!,input: userInput!): User!
-            DeleteUserByID(id: ID!): String
+            DeleteUserByID(id: ID!): DeletionResult
         }
 `;

@@ -34,7 +34,7 @@ export const MESSAGES = {
         ACCOUNT_NOT_REGISTERED: 'Account not registered',
         LOGGEDOUT: 'successfully loggedout',
         ACCOUNT_DELETED: 'Account deleted',
-        NOT_ACCOUNT_DELETED: 'Unable to delete another user account',
+        NOT_ACCOUNT_DELETED: 'Unable to delete user account',
         ACCOUNT_UPDATED: 'Account updated successfully',
         NOT_UPDATED: 'Account updated unsuccessful',
         UNAUTHORIZED: 'Unauthorized access',

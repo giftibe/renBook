@@ -20,16 +20,15 @@ const userSchema = new Schema({
         type: String,
     },
 
-    imageTag: {
-        type: String
-    },
+    // imageTag: {
+    //     type: String
+    // },
 
     username: {
         type: String,
         required: true,
         trim: true,
         minlength: 1,
-        maxlength: 10,
         unique: true,
     },
 
