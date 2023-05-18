@@ -6,17 +6,11 @@ import { isValidId } from '../utils/mongo.ID.js';
 export const user_resolvers = {
     Query: {
         //find a user BY id
-        fetchUserByID: (_parent, args) => {
+        fetchUserByID: async (_parent, args) => {
             let { id } = args
-
-            let findUser = myUser.findById(id)
+            let findUser = await myUser.findById(id)
             if (findUser) {
-                // console.log(findUser);
-                return {
-                    success: true,
-                    code: 201,
-                    findUser
-                }
+                return findUser;
             } else {
                 throw new GraphQLError({
                     message: MESSAGES.USER.NOT_FOUND,
@@ -40,20 +34,18 @@ export const user_resolvers = {
 
             if (find_email.length > 0) {
                 throw new GraphQLError(
-                    'Email already in use ' + email,
+                    MESSAGES.USER.DUPLICATE_EMAIL,
                     {
                         extensions: {
                             code: 409,
                         },
                     }
                 );
-
-
             }
             //check if username exist
             else if (find_username.length > 0) {
                 throw new GraphQLError(
-                    'Username already in use ' + username,
+                    MESSAGES.USER.DUPLICATE_USERNAME,
                     {
                         extensions: {
                             code: 409,
@@ -80,22 +72,16 @@ export const user_resolvers = {
 
 
         // delete user
-        DeleteUserByID: (_parent, args) => {
+        DeleteUserByID: async (_parent, args) => {
             let { id } = args
             //check if the id is valid
             if (isValidId(id)) {
                 //check if the user with the id exists
-                const findUser = myUser.findById(id)
+                const findUser = await myUser.findById(id)
                 if (findUser) {
-                    //delete the user with the id provided
-                    myUser.findByIdAndDelete(id)
-                    return {
-                        message: MESSAGES.USER.ACCOUNT_DELETED,
-                        extensions: {
-                            success: true,
-                            code: 201,
-                        }
-                    }
+                    //if the user exists, delete the user
+                    const deleteUser = await myUser.findByIdAndDelete(id)
+                    return deleteUser ? MESSAGES.USER.ACCOUNT_DELETED : MESSAGES.USER.NOT_ACCOUNT_DELETED
                 } else {
                     // if no user was found then throw error
                     throw new GraphQLError({
