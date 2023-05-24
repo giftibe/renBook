@@ -116,14 +116,8 @@ export const user_resolvers = {
                 const findUser = myUser.findById(id)
                 if (findUser) {
                     //update the user with the id provided
-                    myUser.findByIdAndUpdate(id, input)
-                    return {
-                        message: MESSAGES.USER.ACCOUNT_UPDATED,
-                        extensions: {
-                            success: true,
-                            code: 201,
-                        }
-                    }
+                    const updated = myUser.findByIdAndUpdate(id, input)
+                    return updated
                 } else {
                     //if no user was found with the provided id throw error
                     throw new GraphQLError({
@@ -139,6 +133,31 @@ export const user_resolvers = {
                     //if the id provided is not valid
                     {
                         message: MESSAGES.USER.INCORRECT_DETAILS,
+                        extensions: {
+                            success: false,
+                            code: 500
+                        }
+                    }
+                )
+            }
+        },
+
+        //update a user
+        updateUserByID: async (_parent, args) => {
+            const { id, input } = args
+
+            // check if user exist with the given id
+            const user = await myUser.findById(id)
+            if (!user){
+                return 
+            }else if(user){
+                //update the user with the id provided
+                const updatedUser = await myUser.findByIdAndUpdate(id, input)
+                return updatedResult ? "successfully updated": "updated unsuccessful"
+            }else{
+                throw new GraphQLError(
+                    {
+                        message: MESSAGES.USER.ERROR,
                         extensions: {
                             success: false,
                             code: 500

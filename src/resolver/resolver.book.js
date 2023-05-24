@@ -4,12 +4,13 @@ import book_Model from '../model/book.model.js'
 
 export const book_resolvers = {
     Query: {
-        books: () => {
-            return books;
+        books: async (_parent, _args) => {
+            return await book_Model.find()
         },
 
-        fetchBooksByAuthor: (parent, args) => {
-            const booksWithAuthor = books.filter((book) =>
+        fetchBooksByAuthor: async (_parent, args) => {
+            let book_List = await book_Model.find()
+            const booksWithAuthor = await book_List.filter((book) =>
                 book.author.toLowerCase().includes(args.author)
             );
             if (booksWithAuthor.length > 0) {
@@ -27,27 +28,25 @@ export const book_resolvers = {
         },
 
         // get books by searching the book name
-        fetchBookByName: (parent, args) => {
-            const booksWithName = books.filter((book) =>
-                book.name.toLowerCase().includes(args.name)
+        fetchBookByName: async (_parent, args) => {
+            let { name } = args
+            let book_List = await book_Model.find()
+            const books_Name =await book_List.filter((book) =>
+                book.name.toLowerCase().includes(name)
             );
-            if (booksWithName.length > 0) {
-                return booksWithAuthor;
+            if (books_Name) {
+                return books_Name;
+                console.log(book_List);
+                
             } else {
-                throw new GraphQLError(
-                    { message: MESSAGES.BOOK.BOOK_NOT_FOUND_BY_NAME },
-                    {
-                        extensions: {
-                            code: 404,
-                        },
-                    }
-                );
+                console.log("not working");
             }
         },
 
         // get books by searching the bookID
-        fetchBookByID: (parent, args) => {
-            const fetchedBook = books.find(args.id);
+        fetchBookByID: async (_parent, args) => {
+            const fetchedBook = await book_Model.findById(args.id);
+            console.log(fetchedBook);
             if (fetchedBook) {
                 return fetchedBook;
             } else {
@@ -69,12 +68,13 @@ export const book_resolvers = {
     Mutation: {
 
         addbook: (_parent, args) => {
+            let { name, pages, author, quantity, genre } = args.input
             let newBook = new book_Model({
-                name: args.input.name,
-                pages: args.input.pages,
-                author: args.input.author,
-                quantity: args.input.quantity,
-                genre: args.input.genre
+                name: name,
+                pages: pages,
+                author: author,
+                quantity: quantity,
+                genre: genre
             })
 
 
@@ -95,14 +95,11 @@ export const book_resolvers = {
         },
 
         deleteBookByID(_parent, args) {
-            const findBook = books.find(args.id);
+            const findBook = book_Model.find(args.id);
             if (findBook) {
                 let { id } = args
                 book_Model.findByIdAndDelete(id)
-                return {
-                    success: true,
-                    message: MESSAGES.BOOK.DELETED,
-                }
+                return BookDeletion ? MESSAGES.BOOK.DELETED : MESSAGES.BOOK.BOOK_NOT_DELETED
             } else {
                 throw new GraphQLError(
                     { message: MESSAGES.BOOK.BOOK_NOT_FOUND },
@@ -118,7 +115,7 @@ export const book_resolvers = {
 
 
 
-        
+
 
     }
 }
