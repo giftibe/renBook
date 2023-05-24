@@ -20,16 +20,20 @@ export const book_typeDefs = `#graphql
             genre: String!
         }
 
+
+        scalar BookDeletion
+
+
         type Mutation{
             addbook(input: bookInput): Book!
-            deleteBookByID(ID: Int): Book
+            deleteBookByID(ID: Int): BookDeletion
         }
 
         type Query {
             books: [Book!]  
             fetchBooksByAuthor(author: String): [Book!]
-            fetchBookByName(name: String): [Book!]
-            fetchBookByID(ID: Int): Book
+            fetchBookByName(name: String): [Book]
+            fetchBookByID(id:String): Book
         }
 
 `;

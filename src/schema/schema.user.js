@@ -24,16 +24,24 @@ export const user_typeDefs = `#graphql
             email: String! 
         }
 
+        type updateInput {
+            name: String
+            username:String
+            tel:String!            
+
+        }
+
         type Query {
             users: [User!]
             fetchUserByID(id: ID!): User!
         } 
 
         scalar DeletionResult
+        scalar updatedResult
 
         type Mutation{
             createUser(input: userInput!): User
-            updateUserByID(id: ID!,input: userInput!): User!
+            updateUserByID(id: ID!,input: userInput): User!
             DeleteUserByID(id: ID!): DeletionResult
         }
 `;
