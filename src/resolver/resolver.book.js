@@ -1,6 +1,9 @@
 import { GraphQLError } from 'graphql';
 import { MESSAGES } from '../config/constant.config.js';
 import book_Model from '../model/book.model.js'
+import { isValidId } from '../utils/mongo.ID.js';
+
+
 
 export const book_resolvers = {
     Query: {
@@ -51,7 +54,6 @@ export const book_resolvers = {
         // get books by searching the bookID
         fetchBookByID: async (_parent, args) => {
             const fetchedBook = await book_Model.findById(args.id);
-            console.log(fetchedBook);
             if (fetchedBook) {
                 return fetchedBook;
             } else {
@@ -88,21 +90,71 @@ export const book_resolvers = {
             }
         },
 
-        deleteBookByID(_parent, args) {
-            const findBook = book_Model.find(args.id);
-            if (findBook) {
-                let { id } = args
-                book_Model.findByIdAndDelete(id)
-                return BookDeletion ? MESSAGES.BOOK.DELETED : MESSAGES.BOOK.BOOK_NOT_DELETED
+        deleteBookByID: async (_parent, args) => {
+            const { id } = args
+            const check = isValidId(id)
+            if (check) {
+                const findBook = book_Model.findById(id);
+                if (findBook) {
+                    let { id } = args
+                    await book_Model.findByIdAndDelete(id)
+                    return MESSAGES.BOOK.DELETED || MESSAGES.BOOK.BOOK_NOT_DELETED
+                } else {
+                    throw new GraphQLError(
+                        { message: MESSAGES.BOOK.BOOK_NOT_FOUND },
+                        {
+                            extensions: {
+                                code: 409,
+                            },
+                        })
+                }
             } else {
                 throw new GraphQLError(
-                    { message: MESSAGES.BOOK.BOOK_NOT_FOUND },
+                    //if the id provided is not valid
                     {
+                        message: MESSAGES.USER.INCORRECT_DETAILS,
                         extensions: {
-                            code: 409,
-                        },
-                    })
+                            success: false,
+                            code: 500
+                        }
+                    }
+                )
             }
         },
+
+        updateBookByID: async (_parent, args) => {
+            const { id, input } = args
+            const check = isValidId(id)
+            if (check) {
+                //find if a book with such id exists
+                const fetchbook = await book_Model.findById(id)
+                if (fetchbook) {
+                    const updated = await book_Model.findByIdAndUpdate(
+                        id,
+                        input,
+                        { new: true })
+                    return updated
+                } else {
+                    return "no such book was found"
+                }
+            } else {
+                throw new GraphQLError(
+                    //if the id provided is not valid
+                    {
+                        message: MESSAGES.USER.INCORRECT_DETAILS,
+                        extensions: {
+                            success: false,
+                            code: 500
+                        }
+                    }
+                )
+            }
+        }
+
+
+
+
     }
+
+
 }
