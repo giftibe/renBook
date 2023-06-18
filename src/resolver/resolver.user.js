@@ -2,6 +2,7 @@ import { GraphQLError } from 'graphql';
 import { MESSAGES } from '../config/constant.config.js';
 import myUser from '../model/user.model.js'
 import { isValidId } from '../utils/mongo.ID.js';
+import bcrypt from 'bcrypt'
 
 export const user_resolvers = {
     Query: {
@@ -28,7 +29,7 @@ export const user_resolvers = {
         //create user
         createUser: (_parent, args, _context, _info) => {
             //check if email exist
-            let { email, username, name, password, avatarURL, tel, imageTag } = args.input
+            let { email, username } = args.input
             let find_email = myUser.find(email)
             let find_username = myUser.find(username)
 
@@ -55,15 +56,7 @@ export const user_resolvers = {
             }
             else {
                 //else, save the details
-                let newUser = new myUser({
-                    name: name,
-                    email: email,
-                    avatarURL: avatarURL,
-                    username: username,
-                    password: password,
-                    tel: tel,
-                    imageTag: imageTag
-                })
+                let newUser = new myUser(args.input)
                 let saved = newUser.save()
                 return saved
             }
@@ -109,7 +102,6 @@ export const user_resolvers = {
         //update user 
         updateUserByID: (_parent, args) => {
             let { id, input } = args
-
             //check if the id is valid
             if (isValidId(id)) {
                 //check if the user with the id exists
@@ -145,16 +137,15 @@ export const user_resolvers = {
         //update a user
         updateUserByID: async (_parent, args) => {
             const { id, input } = args
-
             // check if user exist with the given id
             const user = await myUser.findById(id)
-            if (!user){
-                return 
-            }else if(user){
+            if (!user) {
+                return
+            } else if (user) {
                 //update the user with the id provided
                 const updatedUser = await myUser.findByIdAndUpdate(id, input)
-                return updatedResult ? "successfully updated": "updated unsuccessful"
-            }else{
+                return updatedResult ? "successfully updated" : "updated unsuccessful"
+            } else {
                 throw new GraphQLError(
                     {
                         message: MESSAGES.USER.ERROR,

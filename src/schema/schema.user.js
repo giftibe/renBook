@@ -28,7 +28,6 @@ export const user_typeDefs = `#graphql
             name: String
             username:String
             tel:String!            
-
         }
 
         type Query {
