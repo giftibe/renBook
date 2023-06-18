@@ -31,15 +31,20 @@ export const book_resolvers = {
         fetchBookByName: async (_parent, args) => {
             let { name } = args
             let book_List = await book_Model.find()
-            const books_Name =await book_List.filter((book) =>
+            const books_Name = await book_List.filter((book) =>
                 book.name.toLowerCase().includes(name)
             );
             if (books_Name) {
                 return books_Name;
-                console.log(book_List);
-                
             } else {
-                console.log("not working");
+                throw new GraphQLError(
+                    'There is no book with the given name ',
+                    {
+                        extensions: {
+                            code: 404,
+                        },
+                    }
+                );
             }
         },
 
@@ -66,19 +71,8 @@ export const book_resolvers = {
 
 
     Mutation: {
-
         addbook: (_parent, args) => {
-            let { name, pages, author, quantity, genre } = args.input
-            let newBook = new book_Model({
-                name: name,
-                pages: pages,
-                author: author,
-                quantity: quantity,
-                genre: genre
-            })
-
-
-            // console.log(newBook);
+            let newBook = new book_Model(args.input)
             const saved_book = newBook.save()
             if (saved_book) {
                 return saved_book
@@ -110,12 +104,5 @@ export const book_resolvers = {
                     })
             }
         },
-
-
-
-
-
-
-
     }
 }

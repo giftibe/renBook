@@ -1,5 +1,8 @@
 import mongoose from 'mongoose'
 import { ROLE } from '../config/constant.config.js'
+import bcrypt from 'bcrypt'
+const rounds = +process.env.rounds
+
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -62,6 +65,23 @@ const userSchema = new Schema({
     { immutable: true },
     { timestamps: true }
 );
+
+userSchema.pre('save', async function (next) {
+    if (this.isModified('password') || this.isNew('password')) {
+        const salt = await bcrypt.genSalt(rounds);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+    next();
+});
+
+userSchema.pre('findOneAndUpdate', async function (next) {
+    const update = this.getUpdate();
+    if (update.password) {
+        const salt = await bcrypt.genSalt(rounds);
+        update.password = await bcrypt.hash(update.password, salt);
+    }
+    next();
+});
 
 userSchema.pre('remove', function (next) {
     this.isDeleted = false;

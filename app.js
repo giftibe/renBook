@@ -5,7 +5,6 @@ import { startStandaloneServer } from '@apollo/server/standalone'
 import { combined_TypeDefs } from './src/schema/schema.index.js';
 import { combined_Resolvers } from './src/resolver/resolver.index.js'
 import { database } from './src/database/mongo.database.js'
-
 const PORT = process.env.PORT || 3000;
 
 const server = new ApolloServer({
