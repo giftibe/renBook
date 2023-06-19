@@ -29,6 +29,11 @@ export const user_typeDefs = `#graphql
             username:String
             tel:String!            
         }
+        
+        type UserLogin {
+        email: String!
+        password: String!
+        }
 
         type Query {
             users: [User!]
@@ -42,5 +47,15 @@ export const user_typeDefs = `#graphql
             createUser(input: userInput!): User
             updateUserByID(id: ID!,input: userInput): User!
             DeleteUserByID(id: ID!): DeletionResult
+            login(email: String!, password: String!): LoginResponse!
+            logout: Boolean!    
         }
+
+        type LoginResponse {
+            success: Boolean!
+            message: String
+            token: String
+        }
+
+
 `;

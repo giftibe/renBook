@@ -57,10 +57,6 @@ const userSchema = new Schema({
         default: ROLE.USER,
     },
 
-    isDeleted: {
-        type: Boolean,
-        default: false,
-    }
 },
     { immutable: true },
     { timestamps: true }
@@ -83,11 +79,6 @@ userSchema.pre('findOneAndUpdate', async function (next) {
     next();
 });
 
-userSchema.pre('remove', function (next) {
-    this.isDeleted = false;
-    this.save();
-    next();
-});
 
 const userModel = mongoose.model('user', userSchema)
 export default userModel
